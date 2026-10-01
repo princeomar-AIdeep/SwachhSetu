@@ -1,7 +1,14 @@
 const jwt = require('jsonwebtoken');
 const { User } = require('../models');
 
-const SECRET = process.env.JWT_SECRET || (console.warn('⚠️  JWT_SECRET missing - using insecure dev secret'), 'dev-secret-change-me');
+if (!process.env.JWT_SECRET) {
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ FATAL: JWT_SECRET must be set in production.'); process.exit(1);
+  } else {
+    console.warn('⚠️  JWT_SECRET missing — using insecure dev secret. Set JWT_SECRET before deploying.');
+  }
+}
+const SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 const sign = (u) => jwt.sign({ id: u._id }, SECRET, { expiresIn: '7d' });
 
 // Verifies Bearer token and loads the user fresh from DB (so role changes apply immediately).

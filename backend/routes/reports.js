@@ -14,8 +14,8 @@ router.post('/', protect, upload.single('photo'), wrap(async (req, res) => {
   if (!TYPES.includes(type) || !desc?.trim() || !loc?.trim()) return res.status(400).json({ message: 'Issue type, description and location are required.' });
   let ai;
   if (req.file) {
-    const ext = path.extname(req.file.filename).slice(1).replace('jpg', 'jpeg');
-    ai = await verifyReportImage(fs.readFileSync(req.file.path), `image/${ext}`);
+    // Bug fix: use req.file.mimetype directly (already validated by multer) instead of fragile ext parsing
+    ai = await verifyReportImage(fs.readFileSync(req.file.path), req.file.mimetype);
   }
   // AI is preliminary. Uncertain / negative AI => "needs_review", NEVER an automatic penalty or rejection.
   const verification = ai?.available && ai.relevant && !ai.lowConfidence ? 'pending' : (ai?.available ? 'needs_review' : 'pending');

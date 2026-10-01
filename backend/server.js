@@ -4,15 +4,24 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure uploads directory exists (required for multer disk storage)
+fs.mkdirSync(path.join(__dirname, 'uploads'), { recursive: true });
 
 const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } })); // allow frontend (other port) to show /uploads images
-app.use(cors({ origin: (process.env.CLIENT_ORIGIN || 'https://swachh-setu-two.vercel.app/').split(',') }));
+// Bug fix: strip trailing slashes and whitespace from each origin so browser Origin headers match exactly
+app.use(cors({ origin: (process.env.CLIENT_ORIGIN || 'https://swachh-setu-two.vercel.app').split(',').map((o) => o.trim().replace(/\/$/, '')) }));
 app.use(express.json({ limit: '100kb' }));
 // ENHANCE: uploads are public-by-URL (random names). For stricter privacy serve via an authenticated route.
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-mongoose.connect(process.env.MONGO_URI)
+if (!process.env.MONGO_URI) {
+  console.error('❌ FATAL: MONGO_URI environment variable is not set. Set it in .env or your hosting dashboard.');
+  process.exit(1);
+}
+mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 5000 })
   .then(() => console.log('✅ MongoDB connected'))
   .catch((e) => console.error('❌ MongoDB connection error:', e.message));
 
@@ -33,4 +42,4 @@ app.use((err, _q, res, _n) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 API on https://swachh-setu-two.vercel.app/:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 API running on port ${PORT}`));
