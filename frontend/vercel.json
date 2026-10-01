@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://swachhsetu-86ay.onrender.com/api/:path*"
+    },
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://swachhsetu-86ay.onrender.com/uploads/:path*"
+    }
+  ]
+}

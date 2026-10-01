@@ -2,7 +2,7 @@
 // All demo logins use password  Demo@123  (admin: admin@swachhsetu.test)
 // ENHANCE: awareness facts below are deliberately qualitative/dated & sourced. Add numeric statistics
 //          (e.g. tonnes/day) ONLY after copying them from the official source (CPCB / MoHUA annual reports).
-require('dotenv').config();
+require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const M = require('./models');
@@ -74,8 +74,30 @@ const awareness = [
   A('campaign', 'camp-ewaste', 33, 'Responsible E-Waste', 'Producer-responsibility based recycling of electronics.', { objective: 'Safe recovery of materials from e-waste.', image: W + 'ewaste-bin.webp', sourceName: 'cpcb.nic.in', sourceUrl: 'https://cpcb.nic.in' }),
 ];
 
+function mongoUri() {
+  return process.env.MONGO_URI || process.env.MONGODB_URI;
+}
+
+async function ensureCatalog() {
+  if (!await M.WasteCategory.countDocuments()) await M.WasteCategory.insertMany(categories);
+  if (!await M.WasteItem.countDocuments()) await M.WasteItem.insertMany(items);
+  if (!await M.Awareness.countDocuments()) await M.Awareness.insertMany(awareness);
+  if (!await M.ServiceArea.countDocuments()) {
+    await M.ServiceArea.create({
+      state: 'Uttar Pradesh', city: 'Kanpur',
+      areas: ['Civil Lines', 'Swaroop Nagar', 'Kakadeo', 'Kidwai Nagar', 'Govind Nagar', 'Arya Nagar'],
+      center: { lat: 26.4499, lng: 80.3319 },
+    });
+  }
+}
+
+module.exports = { ensureCatalog, categories, items, awareness };
+
+if (require.main === module) {
 (async () => {
-  await mongoose.connect(process.env.MONGO_URI);
+  const uri = mongoUri();
+  if (!uri) throw new Error('Set MONGO_URI or MONGODB_URI before seeding.');
+  await mongoose.connect(uri);
   await Promise.all(Object.values(M).map((m) => m.deleteMany({})));
   await M.WasteCategory.insertMany(categories); await M.WasteItem.insertMany(items); await M.Awareness.insertMany(awareness);
   const areas = ['Civil Lines', 'Swaroop Nagar', 'Kakadeo', 'Kidwai Nagar', 'Govind Nagar', 'Arya Nagar'];
@@ -122,3 +144,4 @@ const awareness = [
   console.log('🌱 Seeded. Title check:', titleFor(1120).title, '\nLogins (password Demo@123): admin@ / collector1@ / citizen@ swachhsetu.test');
   process.exit(0);
 })().catch((e) => { console.error(e); process.exit(1); });
+}
