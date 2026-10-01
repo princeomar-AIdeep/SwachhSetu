@@ -33,4 +33,4 @@ app.use((err, _q, res, _n) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 API on http://https://swachh-setu-two.vercel.app/:${PORT}`));
+app.listen(PORT, () => console.log(`🚀 API on https://swachh-setu-two.vercel.app/:${PORT}`));
