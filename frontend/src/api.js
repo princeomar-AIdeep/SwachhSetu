@@ -1,5 +1,5 @@
 // Single API client. The backend URL comes from VITE_API_URL (see .env.example).
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const BASE = import.meta.env.VITE_API_URL || 'https://swachhsetu-86ay.onrender.com';
 export const assetUrl = (u) => (!u ? '' : u.startsWith('/uploads') ? BASE + u : u); // /assets/* are served by Vite, /uploads/* by the API
 
 export async function api(path, { method = 'GET', body, form } = {}) {
