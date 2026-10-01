@@ -7,7 +7,7 @@ const path = require('path');
 
 const app = express();
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } })); // allow frontend (other port) to show /uploads images
-app.use(cors({ origin: (process.env.CLIENT_ORIGIN || 'http://localhost:5173').split(',') }));
+app.use(cors({ origin: (process.env.CLIENT_ORIGIN || 'https://swachh-setu-two.vercel.app/').split(',') }));
 app.use(express.json({ limit: '100kb' }));
 // ENHANCE: uploads are public-by-URL (random names). For stricter privacy serve via an authenticated route.
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
