@@ -1,0 +1,32 @@
+@import "tailwindcss";
+/* Brand tokens come from the logo (navy + leaf green + azure) and the 4-bin colour code from the supplied waste guide. */
+@theme {
+  --color-navy: #0B2A5B; --color-navy-2: #143A73; --color-leaf: #2A9A3C; --color-leaf-2: #8BD12E; --color-azure: #1677C8;
+  --color-paper: #F4F9F1; --color-ink: #14213D; --color-mute: #5C6B7A; --color-line: #DCE7DA;
+  --color-bin-wet: #2E9D34; --color-bin-dry: #1F5FBF; --color-bin-haz: #D0312D; --color-bin-ewaste: #2B2F36;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", system-ui, sans-serif;
+  --font-sans: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --animate-float: float 6s ease-in-out infinite; --animate-pop: pop .35s cubic-bezier(.2,1.4,.4,1);
+  @keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-10px) } }
+  @keyframes pop { from { opacity: 0; transform: scale(.92) } to { opacity: 1; transform: none } }
+}
+html { scroll-behavior: smooth; }
+body { @apply bg-paper font-sans text-ink antialiased; overflow-x: hidden; }
+h1, h2, h3 { @apply font-display tracking-tight text-navy; }
+:focus-visible { outline: 3px solid var(--color-azure); outline-offset: 2px; }
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition duration-200 active:scale-95 disabled:opacity-50 disabled:pointer-events-none cursor-pointer; }
+  .btn-primary { @apply bg-leaf text-white shadow-md shadow-leaf/30 hover:bg-navy; }
+  .btn-ghost { @apply border-2 border-navy/20 text-navy hover:border-navy hover:bg-navy hover:text-white; }
+  .btn-danger { @apply bg-bin-haz text-white hover:opacity-90; }
+  .input { @apply w-full rounded-xl border border-line bg-white px-4 py-2.5 text-base outline-none transition focus:border-azure focus:ring-4 focus:ring-azure/15; }
+  .input.bad { @apply border-bin-haz bg-red-50; }
+  .label { @apply mb-1 mt-4 block text-sm font-semibold text-navy; }
+  .card { @apply rounded-2xl border border-line bg-white p-5 shadow-sm; }
+  .table-wrap { @apply overflow-x-auto rounded-xl border border-line; }
+  .table-wrap table { @apply w-full min-w-[560px] text-left text-sm; }
+  .table-wrap th { @apply bg-navy/5 px-3 py-2 font-semibold text-navy; }
+  .table-wrap td { @apply border-t border-line px-3 py-2; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+.leaflet-container { font-family: inherit; }
