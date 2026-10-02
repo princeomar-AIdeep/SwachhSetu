@@ -8,7 +8,7 @@ import Intro from '../components/Intro.jsx';
 export function AuthLayout({ title, sub, children }) {
   return (
     <>
-    <Intro />
+    <Intro force />
     <div className="grid min-h-screen lg:grid-cols-2">
       <aside className="relative hidden overflow-hidden bg-navy p-10 text-white lg:flex lg:flex-col lg:justify-between">
         <Link to="/"><Logo className="h-20 rounded-2xl bg-white p-2" /></Link>
