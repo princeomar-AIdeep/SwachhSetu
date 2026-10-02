@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
 import { useApi, useTitle, useCountUp } from '../hooks.js';
 import { AppShell } from '../components/Shell.jsx';
@@ -24,10 +24,12 @@ export function ScoreCard({ s }) {
 export default function Dashboard() {
   useTitle('Dashboard'); const { user } = useAuth();
   const score = useApi('/score/me'); const lb = useApi('/score/leaderboard'); const rep = useApi('/reports/mine'); const pk = useApi('/pickups/mine');
-  const [showLoginIntro] = useState(() => { const f = sessionStorage.getItem('login-intro'); if (f) sessionStorage.removeItem('login-intro'); return !!f; });
+  const { key } = useLocation();
+  const [showIntro, setShowIntro] = useState(false);
+  useEffect(() => { setShowIntro(true); }, [key]);
   return (
     <>
-    {showLoginIntro && <Intro force />}
+    {showIntro && <Intro force />}
     <AppShell>
       <h1 className="text-3xl">Hello, {user.name.split(' ')[0]} 👋</h1><p className="text-mute">What would you like to do today?</p>
       <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_1fr]">

@@ -31,7 +31,7 @@ export default function Login() {
     const b = { email: isInvalid(f.email, { email: true }), password: isInvalid(f.password) }; setBad(b);
     if (b.email || b.password) return setErr('Please fill the highlighted fields correctly.');
     setBusy(true); setErr('');
-    try { const u = await login(f.email, f.password); sessionStorage.setItem('login-intro', '1'); nav(loc.state?.from || homeFor(u.role), { replace: true }); }
+    try { const u = await login(f.email, f.password); nav(loc.state?.from || homeFor(u.role), { replace: true }); }
     catch (x) { setErr(x.message); } finally { setBusy(false); }
   };
   return (
