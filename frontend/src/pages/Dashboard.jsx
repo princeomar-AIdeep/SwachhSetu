@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth.jsx';
 import { useApi, useTitle, useCountUp } from '../hooks.js';
 import { AppShell } from '../components/Shell.jsx';
 import { Async, Pill, Empty, fmtDate } from '../components/ui.jsx';
+import Intro from '../components/Intro.jsx';
 
 const ACTIONS = [['/pickup', '🚚', 'Request Pickup', 'Schedule a collection'], ['/tracking', '📍', 'Track Pickup', 'Follow it on the map'], ['/wastewise', '♻️', 'WasteWise', 'Identify & sort waste'], ['/report', '📸', 'Report Waste', 'Upload a photo'], ['/awareness', '🌍', 'Awareness', 'Learn & earn points']];
 
@@ -22,7 +24,10 @@ export function ScoreCard({ s }) {
 export default function Dashboard() {
   useTitle('Dashboard'); const { user } = useAuth();
   const score = useApi('/score/me'); const lb = useApi('/score/leaderboard'); const rep = useApi('/reports/mine'); const pk = useApi('/pickups/mine');
+  const [showLoginIntro] = useState(() => { const f = sessionStorage.getItem('login-intro'); if (f) sessionStorage.removeItem('login-intro'); return !!f; });
   return (
+    <>
+    {showLoginIntro && <Intro force />}
     <AppShell>
       <h1 className="text-3xl">Hello, {user.name.split(' ')[0]} 👋</h1><p className="text-mute">What would you like to do today?</p>
       <div className="mt-5 grid gap-5 lg:grid-cols-[1.2fr_1fr]">
@@ -44,5 +49,6 @@ export default function Dashboard() {
       </div>
       <div className="mt-6 rounded-2xl bg-leaf/10 p-5"><b className="text-navy">Not sure where your waste belongs?</b><p className="text-sm text-mute">Snap a photo or search in WasteWise — it explains the category and how to dispose of it.</p><Link to="/wastewise" className="btn btn-primary mt-3">Open WasteWise</Link></div>
     </AppShell>
+    </>
   );
 }

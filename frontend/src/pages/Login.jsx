@@ -3,12 +3,9 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth, homeFor } from '../auth.jsx';
 import { useTitle, isInvalid } from '../hooks.js';
 import { Logo } from '../components/ui.jsx';
-import Intro from '../components/Intro.jsx';
 
 export function AuthLayout({ title, sub, children }) {
   return (
-    <>
-    <Intro force />
     <div className="grid min-h-screen lg:grid-cols-2">
       <aside className="relative hidden overflow-hidden bg-navy p-10 text-white lg:flex lg:flex-col lg:justify-between">
         <Link to="/"><Logo className="h-20 rounded-2xl bg-white p-2" /></Link>
@@ -22,7 +19,6 @@ export function AuthLayout({ title, sub, children }) {
           <h2 className="text-3xl">{title}</h2><p className="text-mute">{sub}</p>{children}</div>
       </main>
     </div>
-    </>
   );
 }
 
@@ -35,7 +31,7 @@ export default function Login() {
     const b = { email: isInvalid(f.email, { email: true }), password: isInvalid(f.password) }; setBad(b);
     if (b.email || b.password) return setErr('Please fill the highlighted fields correctly.');
     setBusy(true); setErr('');
-    try { const u = await login(f.email, f.password); nav(loc.state?.from || homeFor(u.role), { replace: true }); }
+    try { const u = await login(f.email, f.password); sessionStorage.setItem('login-intro', '1'); nav(loc.state?.from || homeFor(u.role), { replace: true }); }
     catch (x) { setErr(x.message); } finally { setBusy(false); }
   };
   return (

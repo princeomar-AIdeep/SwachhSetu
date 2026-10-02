@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 // Logo-reveal video: plays ONCE per browser session, muted, skippable, skipped for reduced-motion. 240KB optimised file.
-// Pass force={true} to always show regardless of the session flag (used on login/register pages).
 export default function Intro({ force = false }) {
   const [show, setShow] = useState(() => (force || !sessionStorage.getItem('intro')) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const end = () => { sessionStorage.setItem('intro', '1'); setShow(false); };
